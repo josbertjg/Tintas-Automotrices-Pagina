@@ -1,7 +1,7 @@
 /*
 Theme Name: Tintas Automotrices VZLA
 Text Domain: josbertjg.github.io
-Version: 1
+Version: 1.3
 Description: Tema personalizado para la empresa Tintas Automotrices Vzla, creado, diseñado y desarrollado por Josbert Guedez
 Tags: tintas, tintasAutomotrices, wordpressTheme, customTheme,JosbertJG
 Author: Josbert Guedez
@@ -215,6 +215,47 @@ Author URI: josbertjg.github.io
   align-self: flex-start;
   color: grey;
   font-size: 0.9rem;
+}
+#main-productos #paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+#main-productos #paginacion .page-numbers {
+  padding: 0.5rem 1rem;
+  border-radius: 100%;
+  border: 2px solid #e32945;
+  text-decoration: none;
+  color: #D61C38;
+  transition: all 400ms;
+}
+#main-productos #paginacion .page-numbers:hover {
+  background-color: #FF9E1A;
+  color: white;
+  border: 2px #FF9E1A solid;
+  cursor: pointer;
+}
+#main-productos #paginacion .page-numbers:not(#main-productos #paginacion .page-numbers:last-child) {
+  margin-right: 0.5rem;
+}
+#main-productos #paginacion .prev, #main-productos #paginacion .next {
+  background-color: #333333;
+  color: white;
+  border: 2px #333333 solid;
+  transition: all 400ms;
+}
+#main-productos #paginacion .prev:hover, #main-productos #paginacion .next:hover {
+  background-color: #595959;
+  border: 2px #595959 solid;
+}
+#main-productos #paginacion .current {
+  background-color: #D61C38;
+  color: white;
+}
+#main-productos #paginacion .current:hover {
+  background-color: #e9566c;
+  border: 2px #e9566c solid;
 }
 
 #main-detalle {
@@ -865,7 +906,13 @@ header img {
   transform: translateY(-5px);
 }
 #marcas article:hover .verProductos {
-  transform: translateY(-45px);
+  transform: translateY(-5px);
+}
+#marcas article form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 #marcas article > a:not(.verProductos) {
   text-decoration: none;
@@ -1043,6 +1090,22 @@ header img {
 #distribuidores .modal-body-distribuidores > section:last-child select option:hover {
   background-color: #D61C38 !important;
   cursor: pointer;
+}
+#distribuidores .modal-body-distribuidores > section:last-child #loading {
+  display: none;
+  position: absolute;
+  top: 40%;
+  left: 35%;
+}
+@media screen and (max-width: 575px) {
+  #distribuidores .modal-body-distribuidores > section:last-child #loading {
+    left: 25%;
+  }
+}
+@media screen and (max-width: 379px) {
+  #distribuidores .modal-body-distribuidores > section:last-child #loading {
+    height: 10rem;
+  }
 }
 #distribuidores .modal-body-distribuidores > section:last-child #container-distribuidores-estados {
   margin-top: 1rem;
@@ -1260,6 +1323,7 @@ header img {
 }
 
 #contacto {
+  position: relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -1285,6 +1349,13 @@ header img {
   #contacto {
     flex-direction: column;
   }
+}
+#contacto #loading-formulario {
+  position: absolute;
+  top: 40%;
+  left: 42%;
+  z-index: 999999;
+  display: none;
 }
 #contacto form {
   display: flex;
@@ -1548,4 +1619,3 @@ footer iframe {
   color: white;
 }
 
-/*# sourceMappingURL=index.css.map */

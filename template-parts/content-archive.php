@@ -1,13 +1,3 @@
-
-<?php 
-    echo $_SESSION["titulo"];
-    echo $_SESSION["descripcion"];
-    echo $_SESSION["logo"];
-    echo $_SESSION["marca"];
-    echo $_SESSION["idMarca"];
-    echo $_SESSION["idCategorias"];
-?>
-
 <a href="<?php the_permalink(); ?>">
     <img src="<?php the_post_thumbnail_url(); ?>" alt="productos anjotintas">
     <hr class="border-danger border-2">

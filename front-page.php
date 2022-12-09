@@ -2,13 +2,8 @@
     get_header();
     /*
     NOTAS:
-    -CORREGIR EL MENU PARA QUE ENVIE A LA PAGINA DE INICIO INDEPENDIENTEMENTE DE EN QUE PAGINA ESTE
-    -DAR ESTILO A LA PAGINACION DE PRODUCTOS EN MARCAS
-    -ACOMODAR EL ESTILO DE LAS MARCAS EN EL MENU DE INICIO
-    -PROGRAMAR EL DETALLE DE LOS PRODUCTOS
-    -PROGRAMAR EN LAS MARCAS DEL INICIO QUE SE MUESTREN MUCHOS POST, DEJANDO QUE EL USUARIO ELIJA DESDE EL CONTROL PANEL CUANTOS POST MOSTRAR EN LOS PRODUCTOS DE MARCAS SIN AFECTAR AL NUMERO DE MARCAS MOSTRADAS EN EL INICIO
-    
-
+    -CORREGIR EL MENU PARA QUE EL EFECTO NO TIEMBLE AL LLEGAR A UN PUNTO DE LA PANTALLA
+    -ELIMINAR TODOS LOS COMENTARIOS NO UTILES
     */
   ?>
   <!-- BANNER -->
@@ -89,34 +84,6 @@
           }
           wp_reset_postdata();
         ?>
-        <!-- <article class="col-6 d-flex justify-content-center flex-column align-items-center">
-          <a href="./html/productos.html" class="d-flex justify-content-center flex-column align-items-center">
-            <img src="./img/logo.png" alt="logo-marca">
-            <h1>Nombre de la marca</h1>
-            <a href="./html/productos.html" class="verProductos">Ver Productos</a>
-          </a>
-        </article>
-        <article class="col-6 d-flex justify-content-center flex-column align-items-center">
-          <a href="./html/productos.html" class="d-flex justify-content-center flex-column align-items-center">
-            <img src="./img/logo.png" alt="logo-marca">
-            <h1>Nombre de la marca</h1>
-            <a href="./html/productos.html" class="verProductos">Ver Productos</a>
-          </a>
-        </article>
-        <article class="col-6 d-flex justify-content-center flex-column align-items-center">
-          <a href="./html/productos.html" class="d-flex justify-content-center flex-column align-items-center">
-            <img src="./img/logo.png" alt="logo-marca">
-            <h1>Nombre de la marca</h1>
-            <a href="./html/productos.html" class="verProductos">Ver Productos</a>
-          </a>
-        </article>
-        <article class="col-6 d-flex justify-content-center flex-column align-items-center">
-          <a href="./html/productos.html" class="d-flex justify-content-center flex-column align-items-center">
-            <img src="./img/logo.png" alt="logo-marca">
-            <h1>Nombre de la marca</h1>
-            <a href="./html/productos.html" class="verProductos">Ver Productos</a>
-          </a>
-        </article> -->
       </div>
     </section>
     <!-- DISTRIBUIDORES -->
@@ -127,21 +94,31 @@
         <div class="swiper">
           <!-- Additional required wrapper -->
           <div class="swiper-wrapper">
-            <!-- Slides -->
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
-            <img class="swiper-slide" src="./img/distribuidor-autosc.png" class="" alt="distribuidor agrotintas">
+            <?php
+            //CICLO PARA MOSTRAR LOS DISTRIBUIDORES
+              $args=array(
+                'category_name'=>"distribuidor",
+                'posts_per_archive_page'=>9
+              );
+              query_posts($args);
+              if(have_posts()){
+                while(have_posts()){
+                  the_post();
+                  ?>
+                    <!-- Slides -->
+                    <img class="swiper-slide" src="<?php the_post_thumbnail_url(); ?>" alt="distribuidor agrotintas">
+                  <?php
+                }
+              }else{
+                echo "<h2>Aún no contamos con distribuidores</h2>";
+              }
+              wp_reset_postdata();
+            ?>
           </div>
         </div>
       </div>
       <!-- BOTON DEL MODAL DE DISTRIBUIDORES -->
-      <a type="button" class="" data-bs-toggle="modal" data-bs-target="#modalDistribuidores">Ver distribuidor en mi zona</a>
+      <a type="button" data-bs-toggle="modal" data-bs-target="#modalDistribuidores">Ver distribuidor en mi zona</a>
 
       <!-- MODAL DE DISTRIBUIDORES -->
       <div class="modal fade" id="modalDistribuidores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -158,45 +135,35 @@
                   <i class="bi bi-box-arrow-right"></i>
                 </a>
                 <h1>Selecciona un Estado</h1>
-                <select name="" id="estados" class="form-control">
-                  <option value="#" selected hidden>Escoge un Estado</option>
-                  <option value="#">Lara</option>
-                  <option value="#">Falcon</option>
-                  <option value="#">Zulia</option>
-                  <option value="#">Aragua</option>
+                 <select name="" id="estados" class="form-control">
+                  <option class="opc-estado" value="none" selected hidden>Escoge un Estado</option>
+                  <option class="opc-estado" value="amazonas">Amazonas</option>
+                  <option class="opc-estado" value="anzoatequi">Anzoátegui</option>
+                  <option class="opc-estado" value="apure">Apure</option>
+                  <option class="opc-estado" value="aragua">Aragua</option>
+                  <option class="opc-estado" value="Barinas">Barinas</option>
+                  <option class="opc-estado" value="bolivar">Bolívar</option>
+                  <option class="opc-estado" value="carabobo">Carabobo</option>
+                  <option class="opc-estado" value="cojedes">Cojedes</option>
+                  <option class="opc-estado" value="delta_amacuro">Delta Amacuro</option>
+                  <option class="opc-estado" value="distrito_capital">Distrito Capital</option>
+                  <option class="opc-estado" value="falcon">Falcón</option>
+                  <option class="opc-estado" value="guarico">Guárico</option>
+                  <option class="opc-estado" value="lara">Lara</option>
+                  <option class="opc-estado" value="merida">Mérida</option>
+                  <option class="opc-estado" value="miranda">Miranda</option>
+                  <option class="opc-estado" value="monagas">Monagas</option>
+                  <option class="opc-estado" value="nueva_esparta">Nueva Esparta</option>
+                  <option class="opc-estado" value="portuguesa">Portuguesa</option>
+                  <option class="opc-estado" value="sucre">Sucre</option>
+                  <option class="opc-estado" value="trujillo">Trujillo</option>
+                  <option class="opc-estado" value="vargas">Vargas</option>
+                  <option class="opc-estado" value="yaracuy">Yaracuy</option>
+                  <option class="opc-estado" value="zulia">Zulia</option>
                 </select>
-                <section id="container-distribuidores-estados">
-                  <article class="flex-sm-row flex-column">
-                    <img src="./img/distribuidor-autosc.png" alt="distribuidor agrotintas" class="">
-                    <div>
-                      <h2>Autosanz Colores</h2>
-                      <p>Carrera 3, entre Calle 4 y 6, Modulo I, Local Parcela 55 Nro 5/A, Barquisimeto 3001, Lara <b>0251-8145246</b></p>
-                    </div>
-                  </article>
-                  <hr class="border-danger border-2">
-                  <article class="flex-sm-row flex-column">
-                    <img src="./img/distribuidor-autosc.png" alt="distribuidor agrotintas">
-                    <div>
-                      <h2>Autosanz Colores</h2>
-                      <p>Carrera 3, entre Calle 4 y 6, Modulo I, Local Parcela 55 Nro 5/A, Barquisimeto 3001, Lara <b>0251-8145246</b></p>
-                    </div>
-                  </article>
-                  <hr class="border-danger border-2">
-                  <article class="flex-sm-row flex-column">
-                    <img src="./img/distribuidor-autosc.png" alt="distribuidor agrotintas">
-                    <div>
-                      <h2>Autosanz Colores</h2>
-                      <p>Carrera 3, entre Calle 4 y 6, Modulo I, Local Parcela 55 Nro 5/A, Barquisimeto 3001, Lara <b>0251-8145246</b></p>
-                    </div>
-                  </article>
-                  <hr class="border-danger border-2">
-                  <article class="flex-sm-row flex-column">
-                    <img src="./img/distribuidor-autosc.png" alt="distribuidor agrotintas">
-                    <div>
-                      <h2>Autosanz Colores</h2>
-                      <p>Carrera 3, entre Calle 4 y 6, Modulo I, Local Parcela 55 Nro 5/A, Barquisimeto 3001, Lara <b>0251-8145246</b></p>
-                    </div>
-                  </article>
+                <img id="loading" class="" src="<?php echo get_template_directory_uri()."/assets/img/loading.gif" ?>" alt="loading agrotintas">
+                <section id="container-distribuidores-estados" class="d-flex justify-content-center align-items-center pt-1">
+                  <h2 class="text-center text-danger">¡Selecciona un estado y mira nuestros distribuidores!</h2>
                 </section>
               </section>
             </div>
@@ -229,14 +196,16 @@
     </section>
     <!-- CONTACTANOS -->
     <section id="contacto">
-      <form action="#">
+      <img id="loading-formulario" class="" src="<?php echo get_template_directory_uri()."/assets/img/loading.gif" ?>" alt="loading agrotintas">
+      <form action="#" id="form-contacto">
         <?php
           dynamic_sidebar('Contacto');
         ?>
-        <input type="text" placeholder="Nombre:" class="form-control">
-        <input type="email" placeholder="Email:" class="form-control">
-        <textarea name="" id="" cols="30" rows="6" class="form-control"></textarea>
+        <input required type="text" id="nombre-formulario" name="name" placeholder="Nombre:" class="form-control">
+        <input required type="email" id="email-formulario"  name="email" placeholder="Email:" class="form-control">
+        <textarea required name="message" id="mensaje-formulario" cols="30" rows="6" class="form-control"></textarea>
         <input id="btnSubmit" type="submit" value="Enviar Correo">
+        <input type="hidden" name="action" value="formulario">
         <div id="social-media">
           <a href="https://www.instagram.com/tintasautomotricesvzla/" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
           data-bs-custom-class="custom-tooltip"

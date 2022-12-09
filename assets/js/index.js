@@ -1,4 +1,18 @@
 $(document).ready(()=>{
+    //CHEQUEANDO LA URL PARA GUARDAR DATOS EN LAS COOKIES
+    let arrPath= window.location.pathname.split("/");
+    if(arrPath.indexOf("marcas")!=-1){
+        if((Cookies.get("logo")==undefined || Cookies.get("titulo")==undefined || Cookies.get("descripcion")==undefined)){
+            Cookies.set("logo",$("#logo-marca").attr("src"));
+            Cookies.set("titulo",$("#titulo-marca").text());
+            Cookies.set("descripcion",$("#descripcion-marca").text());
+        }
+        if($("#logo-marca").attr("src").trim().length==0 && $("#titulo").text().trim().length==0 && $("#descripcion-marca").text().trim().length==0){
+            $("#logo-marca").attr("src",Cookies.get("logo"));
+            $("#titulo-marca").text(Cookies.get("titulo"));
+            $("#descripcion-marca").text(Cookies.get("descripcion"));
+        }
+    }
     //DECLARANDO E INICIALIZANDO VARIABLES
     let navHeight=$("nav").height();
     //HABILITANDO LOS TOOLTIPS DE BOOTSTRAP
@@ -95,21 +109,64 @@ $(document).ready(()=>{
         }else{
             $(".menuEstilado").removeClass("menuEstilado")
         }
-        //EFECTOS DE MARCAS
-        if(isInViewport(document.getElementById("marcas"))){
-            setTimeout(() => {
-                marcasEffects();
-                $("#marcas > img").addClass("imgMarcaEstilada");
-            }, 1000);
-        }
     });
     //CERRANDO EL OFFCANVAS CADA VEZ QUE SE CLICKEA UN ITEM
     $(".item-menu").click(()=>document.getElementById("cerrar-offcanvas").click());
-    //ESTILOS DE LA SECCION MARCAS
-    if(isInViewport(document.getElementById("marcas"))){
-        setTimeout(() => {
-            marcasEffects();
-            $("#marcas > section img").addClass("imgMarcaEstilada");
-        }, 1000);
-    }
+    //ALGORITMO PARA ENVIAR CORREO
+    $("#form-contacto").submit((event)=>{
+        event.preventDefault();
+        $("#loading-formulario").fadeIn();
+
+        let datos= new FormData(document.getElementById("form-contacto"));
+
+        $("#loading").fadeIn("fast");
+
+        fetch(ajax_var.ajaxurl,{
+            method:"POST",
+            body:datos
+        })
+        .then((respuesta)=>{
+            if(respuesta.ok)
+                return respuesta.text();
+            else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrio un error, intentalo mas tarde.',
+                    showConfirmButton: false,
+                });
+            }
+        })
+        .then((respuesta)=>{
+            if(respuesta==1){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Correo Enviado.',
+                    showConfirmButton: false,
+                });
+                $("#nombre-formulario").val("");
+                $("#email-formulario").val("");
+                $("#mensaje-formulario").val("");
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrio un error, intentalo mas tarde.',
+                    showConfirmButton: false,
+                });
+            }
+        })
+        .catch((e)=>{
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Ocurrio un error, intentalo mas tarde.',
+                footer: `<p>${e}</p>`,
+                showConfirmButton: false,
+            });
+        })
+        .finally(()=>{
+            $("#loading-formulario").fadeOut("fast");
+        });
+    });
 });

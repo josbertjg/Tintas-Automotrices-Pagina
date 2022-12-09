@@ -1,5 +1,4 @@
 <?php 
-    session_start();
     get_header();
     $_SESSION["titulo"]=$_POST["titulo"];
     $_SESSION["descripcion"]=$_POST["descripcion"];
@@ -22,19 +21,13 @@
     //CONVIRTIENDO EL ARREGLO EN UN STRING
     $categoriasEliminadas=implode(",",$categoriasEliminadas);
     $_SESSION["categoriasEliminadas"]=$categoriasEliminadas;
-    echo $_SESSION["titulo"];
-    echo $_SESSION["descripcion"];
-    echo $_SESSION["logo"];
-    echo $_SESSION["marca"];
-    echo $_SESSION["idMarca"];
-    echo $_SESSION["idCategorias"];
 ?>
 <header id="header-marca">
     <section>
-        <img src="<?php echo $_SESSION["logo"]?>" alt="marca">
+        <img id="logo-marca" src="<?php echo $_SESSION["logo"]?>" alt="marca">
         <div>
-            <h1><?php echo $_SESSION["titulo"]?></h1>
-            <p><?php echo $_SESSION["descripcion"]?></p>
+            <h1 id="titulo-marca"><?php echo $_SESSION["titulo"]?></h1>
+            <p id="descripcion-marca"><?php echo $_SESSION["descripcion"]?></p>
         </div>
     </section>
 </header>
@@ -83,45 +76,49 @@
             </a>
         </section>
     </aside>
-    <section id="container-productos" class="col-xl-9 col-md-8 col-12">
-        <?php
-            $paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
+    <section class="col-xl-9 col-md-8 col-12">
+        <section id="container-productos">
+            <?php
+                $paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
+    
+                // Argumentos
+                $args = array(
+                    'category_name'=>"producto,$marca",
+                    'cat'=>"$categoriasEliminadas",
+                    'paged' => $paged
+                );
+                // Custom query.
+                $query = new WP_Query($args);//"category_name=producto,'$marca'");
+                // Check that we have query results.
+                if ( $query->have_posts() ) {
+                    // Start looping over the query results.
+                    while ( $query->have_posts() ) {
+                        $query->the_post();
+                        get_template_part('template-parts/content','archive');
+                    }
+                
+                // Restore original post data.
+                wp_reset_postdata();
+                ?>
+        </section>
+        <section id="paginacion">
+            <?php
+                $big = 999999999; // need an unlikely integer
 
-            // Argumentos
-            $args = array(
-                'category_name'=>"producto,$marca",
-                'cat'=>"$categoriasEliminadas",
-                'paged' => $paged
-            );
-            // Custom query.
-            $query = new WP_Query($args);//"category_name=producto,'$marca'");
-            // Check that we have query results.
-            if ( $query->have_posts() ) {
-                // Start looping over the query results.
-                while ( $query->have_posts() ) {
-                    $query->the_post();
-                    get_template_part('template-parts/content','archive');
-                }
-            
-            // Restore original post data.
-            wp_reset_postdata();
+                echo paginate_links( array(
+                    'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+                    'format' => '?paged=%#%',
+                    'current' => (get_query_var( 'paged' )==0)?1:get_query_var( 'paged' ),
+                    'total' => $query->max_num_pages,
+                    'end_size'=>3,
+                    'prev_text'=>'<',
+                    'next_text'=>'>'
+                ) );
+            }
             ?>
+        </section>
     </section>
 </main>
-    <?php
-        $big = 999999999; // need an unlikely integer
-
-        echo paginate_links( array(
-            'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
-            'format' => '?paged=%#%',
-            'current' => (get_query_var( 'paged' )==0)?1:get_query_var( 'paged' ),
-            'total' => $query->max_num_pages,
-            'end_size'=>3,
-            'prev_text'=>'<',
-            'next_text'=>'>'
-        ) );
-    }
-    ?>
 
 <?php 
     get_footer();

@@ -13,7 +13,6 @@
 
   <?php
     wp_head();
-    session_start();
   ?>
 
 </head>
@@ -39,7 +38,7 @@
           <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
               <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
-                <img src="./img/logo.png" alt="logo">
+                <img src="<?php echo $logo[0] ?>" alt="logo">
               </h5>
               <button type="button" id="cerrar-offcanvas" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
