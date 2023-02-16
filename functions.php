@@ -49,13 +49,17 @@ add_action('wp_enqueue_scripts', 'tintasAuto_register_styles');
 function tintasAuto_register_scripts(){
     //JQUERY
     wp_enqueue_script('tintasAuto-jquery', get_template_directory_uri() . "/assets/js/jquery-3.6.1.min.js", array(), '3.6.1', false);
-    //JAVASCRIPT
-    wp_enqueue_script('tintasAuto-functions', get_template_directory_uri() . "/assets/js/functions.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.1', false);
-    wp_enqueue_script('tintasAuto-indexJs', get_template_directory_uri() . "/assets/js/index.js", array('tintasAuto-jquery','tintasAuto-functions','tintasAuto-cookies'), '1.8', false);
+    //JAVASCRIPT NATIVO
+    //MARCAS
+    wp_enqueue_script('tintasAuto-marcas', get_template_directory_uri() . "/assets/js/marcas.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.4', false);
+    //DETALLE
+    wp_enqueue_script('tintasAuto-detalle', get_template_directory_uri() . "/assets/js/detalle.js", array('tintasAuto-jquery','tintasAuto-cookies','tintasAuto-marcas'), '1.0', false);
+    //CATEGORIAS
+    wp_enqueue_script('tintasAuto-categorias', get_template_directory_uri() . "/assets/js/categorias.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.0', false);
+    //INDEX
+    wp_enqueue_script('tintasAuto-indexJs', get_template_directory_uri() . "/assets/js/index.js", array('tintasAuto-jquery','tintasAuto-categorias','tintasAuto-cookies'), '1.23', false);
     //LINEA PARA LOCALIZAR EL PATH DEL AJAX.PHP AUTOMATICAMENTE
     wp_localize_script('tintasAuto-indexJs','ajax_var',['ajaxurl'=>admin_url('admin-ajax.php')]);
-    //ID DE LA CATEGORIA DE DISTRIBUIDORES
-    wp_localize_script('tintasAuto-indexJs','dis_id_cat',['distribuidor_id'=>get_cat_ID ( 'distribuidor' )]);
     //URL BASE
     wp_localize_script('tintasAuto-functions','url_base',['url'=>get_template_directory_uri()]);
     //BOOTSTRAP JAVASCRIPT
@@ -70,6 +74,26 @@ function tintasAuto_register_scripts(){
 
 add_action('wp_enqueue_scripts', 'tintasAuto_register_scripts');
 
+//CONFIGURACIONES DEL API
+add_action('rest_api_init', 'register_rest_images' );
+function register_rest_images(){
+    register_rest_field( array('post'),
+        'fimg_url',
+        array(
+            'get_callback'    => 'get_rest_featured_image',
+            'update_callback' => null,
+            'schema'          => null,
+        )
+    );
+}
+function get_rest_featured_image( $object, $field_name, $request ) {
+    if( $object['featured_media'] ){
+        $img = wp_get_attachment_image_src( $object['featured_media'], 'app-thumb' );
+        return $img[0];
+    }
+    return false;
+}
+
 // //REGISTRANDO LOS WIDGETS
 function tintasAuto_register_widgets(){
     register_sidebar(array(
@@ -82,9 +106,36 @@ function tintasAuto_register_widgets(){
         'after_title'   => ''
     ));
     register_sidebar(array(
-        'name'          => ('Imagen Ventana de Distribuidores'),
-        'id'            => 'imgModalDistribuidores',
-        'description'   => ('Imagen de la ventana emergente de búsqueda de distribuidores'),
+        'name'          => ('Imagen Marca Anjo'),
+        'id'            => 'imgAnjo',
+        'description'   => ('Imagen de la marca Anjo'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
+        'name'          => ('Logo Marca Anjo'),
+        'id'            => 'logoAnjo',
+        'description'   => ('Logo que será mostrado en la página de productos de Anjo'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
+        'name'          => ('Imagen Marca Atlas'),
+        'id'            => 'imgAtlas',
+        'description'   => ('Imagen de la marca Atlas'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
+        'name'          => ('Logo Marca Atlas'),
+        'id'            => 'logoAtlas',
+        'description'   => ('Logo que será mostrado en la página de productos de Atlas'),
         'before_widget' => '',
         'after_widget'  => '',
         'before_title'  => '',
@@ -100,6 +151,15 @@ function tintasAuto_register_widgets(){
         'after_title'   => ''
     ));
     register_sidebar(array(
+        'name'          => ('Imagen Mision'),
+        'id'            => 'imgMision',
+        'description'   => ('Imagen de la seccion Mision'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
         'name'          => ('Mision'),
         'id'            => 'Mision',
         'description'   => ('Contenido en la seccion de Misión'),
@@ -109,9 +169,27 @@ function tintasAuto_register_widgets(){
         'after_title'   => ''
     ));
     register_sidebar(array(
+        'name'          => ('Imagen Vision'),
+        'id'            => 'imgVision',
+        'description'   => ('Imagen en la seccion de Visión'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
         'name'          => ('Vision'),
         'id'            => 'Vision',
         'description'   => ('Contenido en la seccion de Visión'),
+        'before_widget' => '',
+        'after_widget'  => '',
+        'before_title'  => '',
+        'after_title'   => ''
+    ));
+    register_sidebar(array(
+        'name'          => ('Imagen Valores'),
+        'id'            => 'imgValores',
+        'description'   => ('Imagen en la seccion de Valores'),
         'before_widget' => '',
         'after_widget'  => '',
         'before_title'  => '',
