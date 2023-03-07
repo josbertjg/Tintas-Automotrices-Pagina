@@ -17,7 +17,7 @@
 
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg sticky-top menuEstilado">
+  <nav class="navbar navbar-expand-lg sticky-top menuEstilado menu">
     <div class="container-fluid d-flex flex-sm-row flex-column">
       <a class="navbar-brand" href="#" class="order-1">
       <?php
@@ -54,8 +54,8 @@
                     'items_wrap' => '<ul class="flex-lg-row flex-column">%3$s</ul>'
                   )
                 );
-
               ?>
+                <li><?php echo do_shortcode('[wpdreams_ajaxsearchlite]'); ?></li>
                 <!-- <ul class="flex-lg-row flex-column">
                     <li><a href="#marcas" class="item-menu">Marcas</a></li>
                     <li><a href="#distribuidores" class="item-menu">Distribuidores</a></li>

@@ -50,14 +50,14 @@ function tintasAuto_register_scripts(){
     //JQUERY
     wp_enqueue_script('tintasAuto-jquery', get_template_directory_uri() . "/assets/js/jquery-3.6.1.min.js", array(), '3.6.1', false);
     //JAVASCRIPT NATIVO
+    //PRODUCTOS
+    wp_enqueue_script('tintasAuto-productos', get_template_directory_uri() . "/assets/js/productos.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.3', false);
     //MARCAS
     wp_enqueue_script('tintasAuto-marcas', get_template_directory_uri() . "/assets/js/marcas.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.4', false);
     //DETALLE
     wp_enqueue_script('tintasAuto-detalle', get_template_directory_uri() . "/assets/js/detalle.js", array('tintasAuto-jquery','tintasAuto-cookies','tintasAuto-marcas'), '1.0', false);
-    //CATEGORIAS
-    wp_enqueue_script('tintasAuto-categorias', get_template_directory_uri() . "/assets/js/categorias.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.0', false);
     //INDEX
-    wp_enqueue_script('tintasAuto-indexJs', get_template_directory_uri() . "/assets/js/index.js", array('tintasAuto-jquery','tintasAuto-categorias','tintasAuto-cookies'), '1.23', false);
+    wp_enqueue_script('tintasAuto-indexJs', get_template_directory_uri() . "/assets/js/index.js", array('tintasAuto-jquery','tintasAuto-cookies'), '1.26', false);
     //LINEA PARA LOCALIZAR EL PATH DEL AJAX.PHP AUTOMATICAMENTE
     wp_localize_script('tintasAuto-indexJs','ajax_var',['ajaxurl'=>admin_url('admin-ajax.php')]);
     //URL BASE
@@ -255,4 +255,256 @@ function send_mail_data() { //FUNCION CALLBACK DEL FORMULARIO
     }
     die;
 }
+
+/* POST TYPES */
+
+//CATEGORIAS ANJO
+function categorias_anjo_post_type(){
+
+    $args=array(
+
+        'labels'=>array(
+            'name'=>'Categorias Anjo',
+            'singular_name'=>'Categoria Anjo'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true,
+        'menu_icon'=>'dashicons-insert-after',
+        'supports'=>array('title','thumbnail'),
+    );
+
+    register_post_type('categorias_anjo',$args);
+};
+add_action('init','categorias_anjo_post_type');
+
+//POST TYPE CATEGORIAS INTERMEDIAS ANJO
+function categorias_intermedias_anjo_post_type(){
+
+    $args=array(
+
+        'labels'=>array(
+            'name'=>'Cat Automotrices',
+            'singular_name'=>'Cat Automotriz'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true,
+        'menu_icon'=>'dashicons-car',
+        'supports'=>array('title'),
+    );
+
+    register_post_type('intermedias_anjo',$args);
+};
+add_action('init','categorias_intermedias_anjo_post_type');
+
+//POST TYPE PARA ANJO
+function anjo_post_type(){
+
+    $args=array(
+
+        'labels'=>array(
+            'name'=>'Productos Anjo',
+            'singular_name'=>'Producto Anjo'
+        ),
+        'hierarchical'=>false,
+        'public'=>true,
+        'has_archive'=>true,
+        'show_in_rest' => true,
+        'menu_icon'=>'dashicons-products',
+        'supports'=>array('title','thumbnail','editor'),
+        // 'rewrite'=>array('slug'=>'anjo')
+    );
+
+    register_post_type('anjo',$args);
+};
+add_action('init','anjo_post_type');
+
+//CATEGORIAS ATLAS
+function categorias_atlas_post_type(){
+
+    $args=array(
+
+        'labels'=>array(
+            'name'=>'Categorias Atlas',
+            'singular_name'=>'Categoria Atlas'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true,
+        'menu_icon'=>'dashicons-insert-after',
+        'supports'=>array('title','thumbnail'),
+    );
+
+    register_post_type('categorias_atlas',$args);
+};
+add_action('init','categorias_atlas_post_type');
+
+//POST TYPE PARA ATLAS
+function atlas_post_type(){
+
+    $args=array(
+
+        'labels'=>array(
+            'name'=>'Productos Atlas',
+            'singular_name'=>'Producto Atlas'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'has_archive'=>true,
+        'show_in_rest' => true,
+        'menu_icon'=>'dashicons-products',
+        'supports'=>array('title','thumbnail','editor'),
+    );
+
+    register_post_type('atlas',$args);
+};
+add_action('init','atlas_post_type');
+
+/* TAXONOMIAS */
+
+//CATEGORIAS PARA EL POST TYPE DE ANJO
+
+//PADRE
+function categoriasPadre_anjo(){
+    $args=array(
+        'labels'=>array(
+            'name'=>'Categorías Padre',
+            'singular_name'=>'Categoría Padre'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true, // This enables the REST API endpoint
+        'query_var' => true // This allows us to append the taxonomy param to the custom post api request.
+    );
+    register_taxonomy('categorias_padre',array('anjo','categorias_anjo','intermedias_anjo'),$args);
+};
+add_action('init','categoriasPadre_anjo');
+
+//CATEGORIAS INTERMEDIAS
+function categoriasIntermedias_anjo(){
+    $args=array(
+        'labels'=>array(
+            'name'=>'Categorias Intermedias',
+            'singular_name'=>'Categoría Intermedia'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true, // This enables the REST API endpoint
+        'query_var' => true // This allows us to append the taxonomy param to the custom post api request.
+    );
+    register_taxonomy('cat_intermedia_anjo',array('anjo','categorias_anjo','intermedias_anjo'),$args);
+};
+add_action('init','categoriasIntermedias_anjo');
+
+//HIJO
+function categoriasHijo_anjo(){
+    $args=array(
+        'labels'=>array(
+            'name'=>'Categorías Hijo',
+            'singular_name'=>'Categoría Hijo'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true, // This enables the REST API endpoint
+        'query_var' => true // This allows us to append the taxonomy param to the custom post api request.
+    );
+    register_taxonomy('hijo_anjo',array('anjo','categorias_anjo','intermedias_anjo'),$args);
+};
+add_action('init','categoriasHijo_anjo');
+
+//CATEGORIAS PARA EL POST TYPE DE ATLAS
+
+//PADRE
+function categoriasPadre_atlas(){
+    $args=array(
+        'labels'=>array(
+            'name'=>'Categorías Padre',
+            'singular_name'=>'Categoría Padre'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true, // This enables the REST API endpoint
+        'query_var' => true // This allows us to append the taxonomy param to the custom post api request.
+    );
+    register_taxonomy('categorias_padre_atlas',array('atlas','categorias_atlas'),$args);
+};
+add_action('init','categoriasPadre_atlas');
+
+//HIJO
+function categoriasHijo_atlas(){
+    $args=array(
+        'labels'=>array(
+            'name'=>'Categorías Hijo',
+            'singular_name'=>'Categoría Hijo'
+        ),
+        'hierarchical'=>true,
+        'public'=>true,
+        'show_in_rest' => true, // This enables the REST API endpoint
+        'query_var' => true // This allows us to append the taxonomy param to the custom post api request.
+    );
+    register_taxonomy('hijo_atlas',array('atlas','categorias_atlas'),$args);
+};
+add_action('init','categoriasHijo_atlas');
+
+//CUSTOMIZANDO EL QUERY DE ANJO PARA QUE SE MUESTREN LOS PRODUCTOS DE UNA CATEGORIA PADRE EXPECIFICA
+
+//Función para modificar la consulta de WP_Query
+function anjo_query($query) {
+    //Verificar que se está en el archive de 'anjo' y que no es una solicitud del administrador
+    if ( is_admin() || ! $query->is_main_query() || ! is_post_type_archive( 'anjo' ) || empty( $_GET['catPadre'] ) ) {
+        return;
+    }
+
+    if($_GET['catPadre']=='automotriz'){
+        $tax_query = [
+            'relation' => 'AND',          
+            [
+                'taxonomy' => 'categorias_padre',
+                'field'    => 'name',
+                'terms'    => $_GET['catPadre'],
+                'operator' =>   'IN'
+            ],
+            [
+                'taxonomy'         => 'cat_intermedia_anjo',
+                'field'            => 'name',
+                'terms'            => $_GET['catIntermedia'],
+                'operator' =>   'IN'
+            ]
+        ];
+    }else{
+        $tax_query = [
+            [
+                'taxonomy' => 'categorias_padre',
+                'field'    => 'name',
+                'terms'    => $_GET['catPadre'],
+            ],
+        ];
+    }
+
+    $query->set( 'tax_query', $tax_query );
+    return $query;
+}
+add_action( 'pre_get_posts', 'anjo_query' );
+
+//CUSTOMIZANDO EL QUERY DE ATLAS PARA QUE SE MUESTREN LOS PRODUCTOS DE UNA CATEGORIA PADRE EXPECIFICA
+
+//Función para modificar la consulta de WP_Query
+function atlas_query($query) {
+    //Verificar que se está en el archive de 'atlas' y que no es una solicitud del administrador
+    if ( is_admin() || ! $query->is_main_query() || ! is_post_type_archive( 'atlas' ) || empty( $_GET['catPadre'] ) ) {
+        return;
+    }
+
+    $tax_query = [
+        [
+            'taxonomy' => 'categorias_padre_atlas',
+            'field'    => 'name',
+            'terms'    => $_GET['catPadre'],
+        ],
+    ];
+    $query->set( 'tax_query', $tax_query );
+    return $query;
+}
+add_action( 'pre_get_posts', 'atlas_query' );
 ?>

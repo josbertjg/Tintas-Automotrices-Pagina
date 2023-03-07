@@ -1,6 +1,14 @@
 <?php
-foreach(get_the_category() as $categoria){
-    $marca=$categoria->name;
+$postType=get_post_type();
+
+if($postType=="anjo"){
+    $taxonomiaPadre="categorias_padre";
+}else if($postType=="atlas"){
+    $taxonomiaPadre="categorias_padre_atlas";
+}
+$terms = get_the_terms( $post->ID , $taxonomiaPadre );
+foreach ( $terms as $term ) {
+    $catPadreName=$term->name;
 }
 ?>
 <div class="container">
@@ -13,7 +21,7 @@ foreach(get_the_category() as $categoria){
             <div class="container-descripcion">
                 <h1 class="titulo-detalle">Descripción</h1>
                 <h2 class="nombre-detalle"><b>Nombre: </b><span><?php the_title(); ?></span></h2>
-                <h2 class="marca"><b>Marca: </b><?php echo $marca ?></h2>
+                <h2 class="marca" style="text-transform:capitalize;"><b>Marca: </b><?php echo $postType ?></h2>
                 <ul class="nav nav-tabs flex-xl-row flex-column" id="myTab" role="tablist">
                 <?php
                 if( !empty( get_field('indicaciones') ) ){ ?>
@@ -114,10 +122,16 @@ foreach(get_the_category() as $categoria){
                     <div id="slide-wrapper" class="swiper-wrapper">
                         <!-- Slides -->
                         <?php
-                        $categoriasEliminadas=$_SESSION["categoriasEliminadas"];
                         // Argumentos
                             $args = array(
-                                'category_name'=>"$marca",
+                                'post_type' => "$postType",
+                                'tax_query' => array(
+                                    array(
+                                        'taxonomy' => "$taxonomiaPadre",
+                                        'field'    => 'name',
+                                        'terms'    => "$catPadreName",
+                                    ),
+                                ),
                             );
                             // Custom query.
                             $query = new WP_Query($args);
@@ -144,7 +158,7 @@ foreach(get_the_category() as $categoria){
         <section class="col-lg-4 col-12">
             <div>
                 <h1><?php the_title(); ?></h1>
-                <h2 class="marca"><b>Marca:</b> <span><?php echo $marca ?></span></h2>
+                <h2 class="marca" style="text-transform:capitalize;"><b>Marca:</b> <span><?php echo $postType ?></span></h2>
                 <p>¿Te interesa este producto?</p>
                 <p>Inicia sesión en nuestro sistema para comprarlo</p>
                 <!-- BOTON PARA INGRESAR -->

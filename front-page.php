@@ -2,7 +2,6 @@
     get_header();
     /*
     NOTAS:
-    -CORREGIR EL MENU PARA QUE EL EFECTO NO TIEMBLE AL LLEGAR A UN PUNTO DE LA PANTALLA
     -ELIMINAR TODOS LOS COMENTARIOS NO UTILES
     */
   ?>
@@ -96,55 +95,50 @@
           <?php
             dynamic_sidebar('Imagen Marca Anjo');
           ?>
-          <div class="container-categorias container-fluid d-flex justify-content-around align-items-center px-2 py-3 flex-wrap">
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <i class="bi bi-car-front"></i>
-                <span>Línea</span>
-                <h1>Automotriz</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAnjo ?>">
-                <input type="hidden" name="categoriaPadre" value="automotriz">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <i class="bi bi-house-door"></i>
-                <span>Línea</span>
-                <h1>Inmobiliaria</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAnjo ?>">
-                <input type="hidden" name="categoriaPadre" value="inmobiliaria">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <i class="bi bi-paint-bucket"></i>
-                <span>Línea</span>
-                <h1>AnjoPrint</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAnjo ?>">
-                <input type="hidden" name="categoriaPadre" value="anjoprint">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-buildings" viewBox="0 0 16 16">
-                  <path d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022ZM6 8.694 1 10.36V15h5V8.694ZM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15Z"/>
-                  <path d="M2 11h1v1H2v-1Zm2 0h1v1H4v-1Zm-2 2h1v1H2v-1Zm2 0h1v1H4v-1Zm4-4h1v1H8V9Zm2 0h1v1h-1V9Zm-2 2h1v1H8v-1Zm2 0h1v1h-1v-1Zm2-2h1v1h-1V9Zm0 2h1v1h-1v-1ZM8 7h1v1H8V7Zm2 0h1v1h-1V7Zm2 0h1v1h-1V7ZM8 5h1v1H8V5Zm2 0h1v1h-1V5Zm2 0h1v1h-1V5Zm0-2h1v1h-1V3Z"/>
-                </svg>
-                <span>Línea</span>
-                <h1>AnjoTech</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAnjo ?>">
-                <input type="hidden" name="categoriaPadre" value="anjotech">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <i class="bi bi-droplet-half"></i>
-                <span>Línea</span>
-                <h1>Solventes</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAnjo ?>">
-                <input type="hidden" name="categoriaPadre" value="solventes">
-              </button>
-            </form>
+          <div class="container-categorias container-fluid d-flex justify-content-around align-items-center px-2 py-3 flex-wrap">           
+            <?php
+              // CICLO PARA MOSTRAR LAS CATEGORIAS PADRE DE ANJO
+              $args=array(
+                'post_type'=>"categorias_anjo",
+                'posts_per_archive_page'=>999999
+              );
+              $q= new WP_Query($args);
+              if($q->have_posts()){
+                while($q->have_posts()){
+                  $q->the_post();
+
+                  //CAT HIJOS
+                  $termsHijos=get_the_terms( get_the_ID(), 'hijo_anjo' );
+                  $idHijos="";
+                  if(!empty($termsHijos))
+                    foreach ( $termsHijos as $term ) {
+                      $idHijos.= $term->term_taxonomy_id.',';
+                    }
+
+                  //CAT PADRE
+                  $termsPadre=get_the_terms( get_the_ID(), 'categorias_padre' );
+                  $id=get_the_ID();
+                  if(!empty($termsPadre))
+                    foreach ( $termsPadre as $term ) {
+                      $padre = $term->name;
+                    }
+                  ?>
+                    <form action="<?php echo get_post_type_archive_link('anjo'); ?>" method="GET">
+                      <button>
+                        <img src="<?php the_post_thumbnail_url(); ?>" alt="linea <?php the_title(); ?> anjo">
+                        <span>Línea</span>
+                        <h1><?php the_title(); ?></h1>
+                        <input type="hidden" name="catPadre" value="<?php echo $padre ?>">
+                        <input type="hidden" name="idHijos" value="<?php echo $idHijos ?>">
+                      </button>
+                    </form>
+                  <?php
+                }
+              }else{
+                echo "<h2>Aún estamos trabajando en nuestras marcas</h2>";
+              }
+              wp_reset_postdata();
+            ?>
           </div>    
         </article>
         <article class="marca-atlas col-6 d-flex justify-content-center flex-column align-items-center">
@@ -152,78 +146,48 @@
             dynamic_sidebar('Imagen Marca Atlas');
           ?>
           <div class="container-categorias container-fluid d-flex justify-content-around align-items-center px-2 py-3 flex-wrap">
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/brocha.jpeg" ?>" alt="brochas">
-                <h1>Brochas</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="brochas">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/rodillo.jpeg" ?>" alt="brochas">
-                <h1>rodillos</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="rodillos">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/minirodillo.jpeg" ?>" alt="brochas">
-                <h1>mini rodillos</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="mini_rodillos">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/espatulas.jpeg" ?>" alt="brochas">
-                <h1>espatulas</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="espatulas">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/accesorios.jpeg" ?>" alt="brochas">
-                <h1>accesorios generales</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="accesorios">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/mangos.jpeg" ?>" alt="brochas">
-                <h1>mangos</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="mangos">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/cepillo-acero.jpeg" ?>" alt="brochas">
-                <h1>cepillo de acero</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="cepillo_acero">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/rodillo-textura.jpeg" ?>" alt="brochas">
-                <h1>rodillos textura</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="rodillos_textura">
-              </button>
-            </form>
-            <form action="<?php echo get_permalink(get_option('page_for_posts')); ?>" method="POST">
-              <button>
-                <img src="<?php echo get_template_directory_uri()."/assets/img/minirodillo-textura.jpeg" ?>" alt="brochas">
-                <h1>Mini rodillos textura</h1>
-                <input type="hidden" name="idMarca" value="<?php echo $idAtlas ?>">
-                <input type="hidden" name="categoriaPadre" value="mini_rodillos_textura">
-              </button>
-            </form>
+          <?php
+              // CICLO PARA MOSTRAR LAS CATEGORIAS PADRE DE ANJO
+              $args=array(
+                'post_type'=>"categorias_atlas",
+                'posts_per_archive_page'=>999999
+              );
+              $q= new WP_Query($args);
+              if($q->have_posts()){
+                while($q->have_posts()){
+                  $q->the_post();
+
+                  //CAT HIJOS
+                  $termsHijos=get_the_terms( get_the_ID(), 'hijo_atlas' );
+                  $idHijos="";
+                  if(!empty($termsHijos))
+                    foreach ( $termsHijos as $term ) {
+                      $idHijos.= $term->term_taxonomy_id.',';
+                    }
+
+                  //CAT PADRE
+                  $termsPadre=get_the_terms( get_the_ID(), 'categorias_padre_atlas' );
+                  $id=get_the_ID();
+                  if(!empty($termsPadre))
+                    foreach ( $termsPadre as $term ) {
+                      $padre = $term->name;
+                    }
+                  ?>
+                    <form action="<?php echo get_post_type_archive_link('atlas'); ?>" method="GET">
+                      <button>
+                        <img src="<?php the_post_thumbnail_url(); ?>" alt="linea <?php the_title(); ?> atlas">
+                        <h1><?php the_title(); ?></h1>
+                        <input type="hidden" name="catPadre" value="<?php echo $padre ?>">
+                        <input type="hidden" name="idHijos" value="<?php echo $idHijos ?>">
+                      </button>
+                    </form>
+                  <?php
+                }
+              }else{
+                echo "<h2>Aún estamos trabajando en nuestras marcas</h2>";
+              }
+              wp_reset_postdata();
+            ?>
           </div>    
         </article>
       </div>

@@ -5,14 +5,14 @@
 $(document).ready(()=>{
     
     //DECLARANDO E INICIALIZANDO VARIABLES
-    let navHeight=$("nav").height();
+    let navHeight=$(".menu").height();
     //HABILITANDO LOS TOOLTIPS DE BOOTSTRAP
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));   
 
     //DANDO ESTILOS AL MENU
     if(window.scrollY>navHeight){
-        $("nav").addClass("menuEstilado");
+        $(".menu").addClass("menuEstilado");
     }else{
         $(".menuEstilado").removeClass("menuEstilado")
     }
@@ -20,7 +20,7 @@ $(document).ready(()=>{
         //EFECTOS DEL MENU
         setTimeout(() => {
             if(window.scrollY>0){
-                $("nav").addClass("menuEstilado");
+                $(".menu").addClass("menuEstilado");
             }else{
                 $(".menuEstilado").removeClass("menuEstilado")
             }
