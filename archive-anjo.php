@@ -140,11 +140,13 @@ if($_GET["catPadre"]!="automotriz" || $_GET["catIntermedia"]!=""){
                     //CAT INTERMEDIA
                     $id=get_the_ID();
                     $termsIntermedia=get_the_terms( $id, 'cat_intermedia_anjo' );
-                    if(!empty($termsIntermedia))
+                    if(!empty($termsIntermedia)){
+                        $idIntermedias='';
                         foreach ( $termsIntermedia as $term ) {
                             $intermedia = $term->name;
                             $idIntermedias.= $term->term_taxonomy_id.',';
                         }
+                    }
 
                     //CAT HIJOS
                     $termsHijos=get_the_terms( get_the_ID(), 'hijo_anjo' );
